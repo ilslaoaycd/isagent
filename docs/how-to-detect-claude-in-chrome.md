@@ -1,4 +1,4 @@
-# How Claude in Chrome acts on a page
+# How to detect Claude in Chrome: what it does to a page
 
 These notes describe what a web page can observe while the Claude in Chrome extension is working on it. They're based on reading the extension's shipped JavaScript (version 1.0.107, November 2026) and on running that code against test pages. No extension code is reproduced here.
 

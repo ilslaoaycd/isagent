@@ -3,7 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agent Detector Demo</title>
+<title>Live Demo: Detect Claude in Chrome Filling a Form | isagent</title>
+<meta name="description" content="Open this page with Claude in Chrome or another AI browser agent and ask it to fill in the form. isagent detects the agent and shows which fields it filled and how.">
+<link rel="canonical" href="https://ilslaoaycd.github.io/isagent/demo/">
+<meta property="og:title" content="Live demo: detect Claude in Chrome filling a form">
+<meta property="og:description" content="Ask Claude in Chrome to fill this form and watch isagent catch every field it fills.">
+<meta property="og:image" content="https://ilslaoaycd.github.io/isagent/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:,">
 <script src="../src/isagent.js"></script>
 <script>
@@ -41,7 +47,7 @@
 </head>
 <body>
 <main>
-  <h1>isagent demo <span class="sub">— fill the form yourself, or let an AI browser agent do it</span></h1>
+  <h1>isagent demo <span class="sub">— fill the form yourself, or ask Claude in Chrome to do it · <a href="../">How it works</a></span></h1>
   <section>
     <form id="signup" onsubmit="event.preventDefault(); document.getElementById('submitted').textContent = JSON.stringify(JSON.parse(new FormData(this).get('agent_detection')), null, 2);">
       <label for="name">Full name</label>

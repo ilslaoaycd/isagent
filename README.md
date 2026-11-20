@@ -7,6 +7,8 @@
 [![gzip size](https://img.shields.io/badge/gzip-6.9%20KB-blue.svg)](dist/isagent.min.js)
 [![license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
+**[Live demo](https://ilslaoaycd.github.io/isagent/demo/)** · **[How to detect Claude in Chrome](https://ilslaoaycd.github.io/isagent/)** · [npm](https://www.npmjs.com/package/isagent.js)
+
 ```js
 if (isagent.isAgent()) { /* an AI agent is driving this page */ }
 ```
@@ -20,6 +22,16 @@ if (isagent.isAgent()) { /* an AI agent is driving this page */ }
 - **Works where sites actually have forms.** Shadow DOM web components, same-origin iframes, `fetch` + `FormData` single-page apps, and `form.submit()`.
 - **Low false positives.** Timing uses browser event timestamps, so busy pages don't make people look like bots. Tests cover busy main threads, page scripts that reformat fields, quick touchpad taps and human-paced input.
 - **Tiny and private.** ~7 KB gzipped, no network requests, no cookies or storage. The summary sent to your server lists fields and methods, never values.
+
+## How to detect Claude in Chrome
+
+Your server can't: Claude in Chrome runs inside the visitor's own Chrome, with their user agent, cookies and IP. A script in the page can, because Claude leaves three traces:
+
+1. **Its overlay.** An attribute-less `<div>` on `<body>` holds Claude's glow, cursor and Stop button in a **closed shadow root**. Older selectors such as `#claude-agent-stop-container` no longer match since version 1.0.107.
+2. **Its `form_input` tool.** It fires an untrusted `change` event *before* `input`, which is the reverse of real typing and normal scripts.
+3. **Machine timing.** Keys are held for under a millisecond, and clicks jump to the target with no movement trail.
+
+`isagent` checks all three and tells you which fields Claude filled. To see it in action, open the [live demo](https://ilslaoaycd.github.io/isagent/demo/) and ask Claude in Chrome to fill in the form. The full explanation is in [How to detect Claude in Chrome](https://ilslaoaycd.github.io/isagent/).
 
 ## Install
 
@@ -122,7 +134,7 @@ Scores combine as `1 − Π(1 − weight)`:
 - `agents["claude-in-chrome"]` (also `claude`) counts only that agent's signals.
 - `verdict` is `"agent"` at `score ≥ 0.85` (the `threshold` option), `"suspected"` at `≥ 0.5`, otherwise `"none"`.
 
-How Claude in Chrome works on a page, and why each signal exists, is in [docs/how-claude-in-chrome-works.md](docs/how-claude-in-chrome-works.md).
+How Claude in Chrome works on a page, and why each signal exists, is in [docs/how-to-detect-claude-in-chrome.md](docs/how-to-detect-claude-in-chrome.md).
 
 ### Verified against
 
@@ -176,7 +188,7 @@ TypeScript types are included.
 npm install
 npm test          # 24 behaviour tests + 3 canaries, in real Chrome via Puppeteer
 npm run canary    # only the tests that run the installed extension's own code
-npm run demo      # http://localhost:8765/demo/ – try it with an agent, or by hand
+npm run demo      # http://localhost:8765/demo/ – try it with an agent, or by hand (also hosted on GitHub Pages)
 npm run build     # dist/isagent.min.js
 ```
 

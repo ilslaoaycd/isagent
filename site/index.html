@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Detect Claude in Chrome on Your Website (2026) | isagent</title>
+<meta name="description" content="Claude in Chrome uses the visitor's own browser, user agent and IP, so servers can't see it. Here's how to detect it in the page: its overlay, its form_input tool and its keystroke timing, with a free open-source script.">
+<link rel="canonical" href="https://ilslaoaycd.github.io/isagent/">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="isagent">
+<meta property="og:title" content="How to detect Claude in Chrome on your website">
+<meta property="og:description" content="Detect Claude in Chrome and other AI browser agents in the page, and see exactly which form fields they filled. Free, open source, ~7 KB.">
+<meta property="og:url" content="https://ilslaoaycd.github.io/isagent/">
+<meta property="og:image" content="https://ilslaoaycd.github.io/isagent/og.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How to detect Claude in Chrome on your website">
+<meta name="twitter:description" content="Detect Claude in Chrome and other AI browser agents in the page, and see which form fields they filled.">
+<meta name="twitter:image" content="https://ilslaoaycd.github.io/isagent/og.png">
+<meta name="theme-color" content="#c6613f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23c6613f'/%3E%3Cpath d='M9 8l14 7-6 2-3 7z' fill='white'/%3E%3C/svg%3E">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "How to detect Claude in Chrome on your website",
+      "description": "How a website can detect the Claude in Chrome browser agent and see which form fields it filled.",
+      "datePublished": "2026-11-20",
+      "dateModified": "2026-11-20",
+      "author": { "@type": "Person", "name": "ilslaoaycd", "url": "https://github.com/ilslaoaycd" },
+      "image": "https://ilslaoaycd.github.io/isagent/og.png",
+      "mainEntityOfPage": "https://ilslaoaycd.github.io/isagent/",
+      "about": ["Claude in Chrome", "AI browser agents", "bot detection"]
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "name": "isagent",
+      "description": "Like isbot, but for AI browser agents. Detect Claude in Chrome and other agents on your website, and see which form fields they filled.",
+      "codeRepository": "https://github.com/ilslaoaycd/isagent",
+      "programmingLanguage": "JavaScript",
+      "license": "https://opensource.org/licenses/MIT",
+      "url": "https://www.npmjs.com/package/isagent.js"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can a website detect Claude in Chrome?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes, from JavaScript in the page. The server can't tell, because Claude in Chrome runs in the visitor's own Chrome with their user agent, cookies and IP. In the page, its overlay element, the event order of its form_input tool and the machine timing of its keystrokes and clicks are all observable. The open-source isagent script checks all of these." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Claude in Chrome identify itself with a user agent or header?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. It uses the visitor's normal Chrome user agent and sends no special header, so user-agent bot lists such as isbot don't catch it." }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do the #claude-agent-stop-container and #claude-agent-glow-border selectors no longer work?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Recent versions of Claude in Chrome (1.0.107 and later) moved those elements into a closed shadow root, so document.querySelector can't find them. isagent detects the overlay by its structure instead: an attribute-less div on body that holds a closed shadow root." }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I block Claude in Chrome?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Usually not. Many visitors use it on purpose, and assistive technology can trigger some of the same generic signals. Use detection to ask for confirmation, review submissions, or measure agent traffic." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it detect other AI browser agents?",
+          "acceptedAnswer": { "@type": "Answer", "text": "isagent identifies Claude in Chrome specifically and detects other CDP-driven agents (Puppeteer and Playwright-style automation, Browser Use, ChatGPT agent) through generic signals such as synthetic typing, teleporting clicks and automation globals." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<style>
+  :root {
+    --bg: #faf9f6; --fg: #1c1b19; --muted: #6a675f; --card: #ffffff; --line: #e4e1d8;
+    --accent: #c6613f; --accent-soft: #f6e7df; --code-bg: #f2f0ea; --ok: #2f7d4f;
+    --mono: ui-monospace, SFMono-Regular, "Cascadia Code", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #171614; --fg: #ecebe6; --muted: #a19e96; --card: #201f1d; --line: #34322f; --accent: #e08a68; --accent-soft: #3a2a22; --code-bg: #262422; }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  header.top { max-width: 760px; margin: 0 auto; padding: 20px 16px 0; display: flex; gap: 16px; align-items: center; justify-content: space-between; font-size: 15px; }
+  header.top .brand { font-weight: 700; color: var(--fg); text-decoration: none; letter-spacing: -0.01em; }
+  header.top nav { display: flex; gap: 16px; flex-wrap: wrap; }
+  main { max-width: 760px; margin: 0 auto; padding: 8px 16px 64px; }
+  h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.12; letter-spacing: -0.02em; margin: 36px 0 16px; }
+  h2 { font-size: 26px; line-height: 1.25; letter-spacing: -0.01em; margin: 48px 0 12px; }
+  h3 { font-size: 19px; margin: 28px 0 6px; }
+  p, li { max-width: 68ch; }
+  .lede { font-size: 19px; color: var(--fg); }
+  .meta { color: var(--muted); font-size: 14px; }
+  .answer { background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 10px; padding: 16px 20px; margin: 24px 0; }
+  .answer p { margin: 0 0 10px; }
+  .answer p:last-child { margin: 0; }
+  code { font-family: var(--mono); font-size: 0.88em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+  .code { position: relative; margin: 16px 0; }
+  .code pre { margin: 0; background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px; padding: 42px 16px 16px; overflow-x: auto; font: 14px/1.55 var(--mono); }
+  .code pre code { background: none; padding: 0; font-size: inherit; }
+  .code button { position: absolute; top: 8px; right: 8px; font: 13px system-ui, sans-serif; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--card); color: var(--fg); cursor: pointer; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; margin: 24px 0; }
+  .btn { display: inline-block; padding: 10px 18px; border-radius: 8px; font-weight: 600; text-decoration: none; border: 1px solid var(--line); color: var(--fg); background: var(--card); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  figure { margin: 24px 0; }
+  figure img { width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); display: block; }
+  figcaption { color: var(--muted); font-size: 14px; margin-top: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 16px 0; display: block; overflow-x: auto; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-weight: 600; white-space: nowrap; }
+  .note { background: var(--accent-soft); border-radius: 10px; padding: 14px 18px; margin: 20px 0; }
+  details { border-top: 1px solid var(--line); padding: 12px 0; }
+  details:last-of-type { border-bottom: 1px solid var(--line); }
+  summary { font-weight: 600; cursor: pointer; }
+  details p { margin: 8px 0 0; }
+  footer { max-width: 760px; margin: 0 auto; padding: 24px 16px 48px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="./">isagent</a>
+  <nav>
+    <a href="./demo/">Live demo</a>
+    <a href="https://github.com/ilslaoaycd/isagent">GitHub</a>
+    <a href="https://www.npmjs.com/package/isagent.js">npm</a>
+  </nav>
+</header>
+
+<main>
+<article>
+  <h1>How to detect Claude in Chrome on your website</h1>
+  <p class="meta">Updated November 20, 2026 · verified against Claude in Chrome 1.0.107</p>
+
+  <div class="answer">
+    <p><strong>Short answer:</strong> you can't detect Claude in Chrome from your server. It runs inside the visitor's own Chrome, with their user agent, cookies and IP address. You <em>can</em> detect it with JavaScript in the page, because it leaves three kinds of traces:</p>
+    <p>1. its on-page overlay (an element on <code>&lt;body&gt;</code> holding a closed shadow root),<br>
+       2. the event order of its <code>form_input</code> tool (<code>change</code> before <code>input</code>), and<br>
+       3. keystrokes and clicks with machine timing.</p>
+    <p>The free, open-source <a href="https://github.com/ilslaoaycd/isagent">isagent</a> script checks all of them and tells you which form fields Claude filled.</p>
+  </div>
+
+  <div class="code">
+    <pre><code>&lt;script src="https://cdn.jsdelivr.net/npm/isagent.js@1/dist/isagent.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  const detector = isagent.start({ formField: "agent_detection" });
+
+  if (isagent.isAgent()) {
+    // an AI browser agent is (or was) operating on this page
+  }
+&lt;/script&gt;</code></pre>
+    <button type="button" data-copy>Copy</button>
+  </div>
+
+  <div class="cta">
+    <a class="btn primary" href="./demo/">Try the live demo</a>
+    <a class="btn" href="https://github.com/ilslaoaycd/isagent">View on GitHub</a>
+  </div>
+
+  <figure>
+    <img src="demo.png" width="1040" height="760" alt="The isagent demo after Claude in Chrome filled a form: each filled field is outlined, and the panel lists the method Claude used for each one.">
+    <figcaption>The demo page after a Claude in Chrome-style session: every field it filled is outlined and listed with the method it used.</figcaption>
+  </figure>
+
+  <h2>Why your server can't see Claude in Chrome</h2>
+  <p>Most bot detection starts on the server: user-agent lists such as <code>isbot</code>, IP reputation, TLS fingerprints. None of these work here. Claude in Chrome is a browser extension that drives the visitor's real browser over the Chrome DevTools Protocol. Every request comes from a normal, logged-in Chrome on the visitor's own connection, and the extension sends no identifying header.</p>
+  <p>What changes is what happens <em>inside</em> the page, and a script running there can see it.</p>
+
+  <h2>Three ways to detect Claude in Chrome in the page</h2>
+
+  <h3>1. Its overlay element</h3>
+  <p>While Claude works on a tab, it draws an orange glow, its own cursor, a "Claude is working" tag and a Stop button. All of these live in a <strong>closed shadow root</strong> attached to one attribute-less <code>&lt;div&gt;</code> that the extension appends to <code>&lt;body&gt;</code>. The page can't look inside, but it can see the element itself:</p>
+  <ul>
+    <li>it is a <code>div</code> with no attributes and no children, directly under <code>&lt;body&gt;</code>;</li>
+    <li>its computed <code>display</code> is <code>contents</code>;</li>
+    <li>calling <code>attachShadow()</code> on it throws, because a closed root already exists.</li>
+  </ul>
+  <p>The element stays after Claude finishes, so even a script that loads late can tell Claude was there. While Claude is actively working, the Stop button and tag also receive pointer events, so <code>document.elementsFromPoint()</code> at their positions returns the overlay element. That gives you a live "Claude is acting right now" signal.</p>
+
+  <div class="note"><strong>Why <code>#claude-agent-stop-container</code> stopped working:</strong> earlier write-ups suggested querying ids like <code>#claude-agent-stop-container</code>, <code>#claude-agent-glow-border</code> or <code>#claude-agent-animation-styles</code>. Since the overlay moved into a closed shadow root (version 1.0.107), those queries return nothing, even while Claude is on the page. Detecting by structure keeps working. isagent still checks the old ids for older versions.</div>
+
+  <h3>2. Its <code>form_input</code> tool</h3>
+  <p>To fill a field, Claude's <code>form_input</code> tool sets the value directly, focuses the field, then dispatches an untrusted <code>change</code> event followed by an untrusted <code>input</code> event, both in the same task. Real typing, browser autofill and normal scripts fire <code>input</code> first. The reversed order identifies Claude, and tells you exactly which field it filled. Checkboxes and radios are toggled with a script <code>click()</code>, which is also visible as an untrusted click.</p>
+
+  <h3>3. Machine-timed typing and clicks</h3>
+  <p>When Claude types with its <code>computer</code> tool, it sends every key-down and key-up through the DevTools Protocol at once. The events are trusted, but each key is held for under a millisecond with no gap between keys. People hold keys for tens of milliseconds. Clicks are similar: the pointer appears on the target in a single jump, with no movement trail, and the button is released within milliseconds.</p>
+  <p>Measure these with each event's <code>timeStamp</code>, not the time your handler runs. On a busy page, a person's key-down and key-up can wait in the queue and run back to back, which would make them look like a bot.</p>
+
+  <h2>Which fields did Claude fill?</h2>
+  <p>Knowing that an agent was present is useful; knowing <em>which answers</em> it wrote is better. isagent attributes every field to the method that filled it and sends the result with your form:</p>
+  <div class="code">
+    <pre><code>{
+  "verdict": "agent",
+  "agent": "claude-in-chrome",
+  "active": true,
+  "fields": [
+    "input#email[name=\"email\"]:form_input",
+    "textarea#message[name=\"message\"]:synthetic-typing"
+  ]
+}</code></pre>
+    <button type="button" data-copy>Copy</button>
+  </div>
+  <p>With <code>formField</code> set, this JSON is added to every <code>FormData</code> built from a form. That covers normal submissions, <code>form.submit()</code> and <code>fetch</code> with <code>new FormData(form)</code>. For JSON APIs, send <code>detector.summary(form)</code> yourself.</p>
+
+  <h2>What to do when you detect it</h2>
+  <ul>
+    <li><strong>Don't hard-block.</strong> Many visitors use Claude in Chrome on purpose. Some generic signals can also come from on-screen keyboards, voice input or password managers.</li>
+    <li><strong>Ask for confirmation</strong> of the fields an agent filled, or send a confirmation email before acting on the submission.</li>
+    <li><strong>Review or rate-limit</strong> agent submissions on sensitive flows such as sign-ups, payments and reviews.</li>
+    <li><strong>Measure</strong> how much of your traffic is agent-driven before deciding on a policy.</li>
+  </ul>
+  <p>The result is generated in the visitor's browser, so treat it as a signal, not proof. A missing result tells you nothing either way.</p>
+
+  <h2>What can't be detected</h2>
+  <ul>
+    <li><strong>Reading.</strong> Reading the page, taking accessibility snapshots and capturing screenshots leave no trace a page can observe.</li>
+    <li><strong>Background tabs.</strong> Claude turns on focus emulation, which makes a background tab look visible and focused.</li>
+    <li><strong>Future versions.</strong> Any of these traces could change in a later release. isagent's test suite runs the installed extension's own code to catch that.</li>
+  </ul>
+
+  <h2>Frequently asked questions</h2>
+  <details open>
+    <summary>Can a website detect Claude in Chrome?</summary>
+    <p>Yes, from JavaScript in the page, but not from the server. Its overlay element, the event order of its <code>form_input</code> tool and the timing of its keystrokes and clicks are all observable.</p>
+  </details>
+  <details>
+    <summary>Does Claude in Chrome have its own user agent?</summary>
+    <p>No. It uses the visitor's normal Chrome user agent and sends no special header, so user-agent checks like <code>isbot</code> don't catch it.</p>
+  </details>
+  <details>
+    <summary>Does this detect ChatGPT agent, Comet or Browser Use?</summary>
+    <p>isagent identifies Claude in Chrome specifically. Other DevTools-driven agents are detected through generic signals: synthetic typing, teleporting clicks, automation globals and published DOM markers.</p>
+  </details>
+  <details>
+    <summary>Is it free?</summary>
+    <p>Yes. isagent is MIT-licensed, has no dependencies, is about 7 KB gzipped and makes no network requests.</p>
+  </details>
+  <details>
+    <summary>How do I test it?</summary>
+    <p>Open the <a href="./demo/">live demo</a> and ask Claude in Chrome to fill in the form. Each field it fills is outlined, along with the method it used.</p>
+  </details>
+
+  <h2>Get started</h2>
+  <div class="code">
+    <pre><code>npm install isagent.js</code></pre>
+    <button type="button" data-copy>Copy</button>
+  </div>
+  <div class="code">
+    <pre><code>import { start, isAgent } from "isagent.js";
+
+const detector = start({
+  formField: "agent_detection",
+  onDetect: (report) =&gt; console.log("Agent detected:", report.agent),
+  onFieldFill: ({ element, method }) =&gt; element.classList.add("agent-filled"),
+});</code></pre>
+    <button type="button" data-copy>Copy</button>
+  </div>
+  <p>Full documentation, the list of signals and the test suite are on <a href="https://github.com/ilslaoaycd/isagent">GitHub</a>.</p>
+</article>
+</main>
+
+<footer>
+  isagent is MIT-licensed open source by <a href="https://github.com/ilslaoaycd">ilslaoaycd</a>. Not affiliated with or endorsed by Anthropic. "Claude" is a trademark of Anthropic.
+</footer>
+
+<script>
+  document.querySelectorAll("[data-copy]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var text = b.parentNode.querySelector("code").textContent;
+      (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () {
+        b.textContent = "Copied";
+        setTimeout(function () { b.textContent = "Copy"; }, 1500);
+      }, function () {});
+    });
+  });
+</script>
+</body>
+</html>
