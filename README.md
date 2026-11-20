@@ -3,7 +3,7 @@
 **Like [`isbot`](https://github.com/omrilotan/isbot), but for AI browser agents.** Know when Claude in Chrome or another agent is using your website, and which form fields it filled.
 
 [![CI](https://github.com/ilslaoaycd/isagent/actions/workflows/ci.yml/badge.svg)](https://github.com/ilslaoaycd/isagent/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/isagent.svg)](https://www.npmjs.com/package/isagent)
+[![npm](https://img.shields.io/npm/v/isagent.js.svg)](https://www.npmjs.com/package/isagent.js)
 [![gzip size](https://img.shields.io/badge/gzip-6.9%20KB-blue.svg)](dist/isagent.min.js)
 [![license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -25,7 +25,7 @@ if (isagent.isAgent()) { /* an AI agent is driving this page */ }
 
 ```html
 <!-- in <head>, before your other scripts -->
-<script src="https://cdn.jsdelivr.net/npm/isagent@1/dist/isagent.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/isagent.js@1/dist/isagent.min.js"></script>
 <script>
   const detector = isagent.start({ formField: "agent_detection" });
 </script>
@@ -34,11 +34,11 @@ if (isagent.isAgent()) { /* an AI agent is driving this page */ }
 or
 
 ```sh
-npm install isagent
+npm install isagent.js
 ```
 
 ```js
-import { start } from "isagent";
+import { start } from "isagent.js";
 export const detector = start({ formField: "agent_detection" });
 ```
 

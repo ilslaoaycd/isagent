@@ -4,8 +4,8 @@
 
 ## Integrate
 
-- Script tag (load early, in <head>): `<script src="https://cdn.jsdelivr.net/npm/isagent@1/dist/isagent.min.js"></script>` then `isagent.start({ formField: "agent_detection" })`.
-- npm: `npm install isagent`; `import { start } from "isagent"; const detector = start({ formField: "agent_detection" });`
+- Script tag (load early, in <head>): `<script src="https://cdn.jsdelivr.net/npm/isagent.js@1/dist/isagent.min.js"></script>` then `isagent.start({ formField: "agent_detection" })`.
+- npm: `npm install isagent.js`; `import { start } from "isagent.js"; const detector = start({ formField: "agent_detection" });`
 - With `formField`, every FormData built from a form (submit, form.submit(), new FormData(form)) gets a JSON field: `{ v, verdict: "agent"|"suspected"|"none", agent: "claude-in-chrome"|"chatgpt-agent"|"browser-use"|"playwright"|"unknown"|null, active, score, claude, signals: ["name:count"], fields: ["selector:method"] }`.
 - JSON APIs: include `detector.summary(formElement)` in the request body.
 - Server: treat as an advisory signal (client-controlled). Use for confirmation steps, review queues, analytics; do not hard-block (assistive tech can trigger generic signals).

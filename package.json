@@ -1,5 +1,5 @@
 {
-  "name": "isagent",
+  "name": "isagent.js",
   "version": "1.0.0",
   "description": "Like isbot, but for AI browser agents: detect Claude in Chrome and other agents on your website, and see exactly which form fields they filled. Zero dependencies, ~7 KB gzipped.",
   "keywords": [
