@@ -1,0 +1,74 @@
+{
+  "name": "isagent",
+  "version": "1.0.0",
+  "description": "Like isbot, but for AI browser agents: detect Claude in Chrome and other agents on your website, and see exactly which form fields they filled. Zero dependencies, ~7 KB gzipped.",
+  "keywords": [
+    "isbot",
+    "ai-agent",
+    "agent-detection",
+    "bot-detection",
+    "claude",
+    "claude-in-chrome",
+    "browser-agent",
+    "computer-use",
+    "chatgpt-agent",
+    "browser-use",
+    "automation-detection",
+    "cdp",
+    "puppeteer",
+    "playwright",
+    "form",
+    "autofill",
+    "fraud"
+  ],
+  "homepage": "https://github.com/ilslaoaycd/isagent#readme",
+  "bugs": {
+    "url": "https://github.com/ilslaoaycd/isagent/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ilslaoaycd/isagent.git"
+  },
+  "license": "MIT",
+  "author": "ilslaoaycd",
+  "main": "src/isagent.js",
+  "module": "src/index.mjs",
+  "types": "src/isagent.d.ts",
+  "unpkg": "dist/isagent.min.js",
+  "jsdelivr": "dist/isagent.min.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./src/index.d.mts",
+        "default": "./src/index.mjs"
+      },
+      "require": {
+        "types": "./src/isagent.d.ts",
+        "default": "./src/isagent.js"
+      }
+    },
+    "./min": "./dist/isagent.min.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "node scripts/build.js",
+    "test": "node --test --test-concurrency=1 test/detector.test.js test/canary.test.js",
+    "canary": "node --test test/canary.test.js",
+    "demo": "node scripts/serve.js 8765",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "acorn": "^8.19.0",
+    "acorn-walk": "^8.3.5",
+    "puppeteer-core": "^24.0.0",
+    "terser": "^5.51.4"
+  }
+}

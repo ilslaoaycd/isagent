@@ -1,0 +1,27 @@
+# isagent
+
+> Like isbot, but for AI browser agents. Browser library that detects AI browser agents (Claude in Chrome specifically; CDP/Puppeteer/Playwright-style automation, ChatGPT agent and Browser Use generically) on a web page and reports which form fields they filled and how. MIT, no dependencies, ~7 KB gzipped, no network requests.
+
+## Integrate
+
+- Script tag (load early, in <head>): `<script src="https://cdn.jsdelivr.net/npm/isagent@1/dist/isagent.min.js"></script>` then `isagent.start({ formField: "agent_detection" })`.
+- npm: `npm install isagent`; `import { start } from "isagent"; const detector = start({ formField: "agent_detection" });`
+- With `formField`, every FormData built from a form (submit, form.submit(), new FormData(form)) gets a JSON field: `{ v, verdict: "agent"|"suspected"|"none", agent: "claude-in-chrome"|"chatgpt-agent"|"browser-use"|"playwright"|"unknown"|null, active, score, claude, signals: ["name:count"], fields: ["selector:method"] }`.
+- JSON APIs: include `detector.summary(formElement)` in the request body.
+- Server: treat as an advisory signal (client-controlled). Use for confirmation steps, review queues, analytics; do not hard-block (assistive tech can trigger generic signals).
+
+## API
+
+- `isagent.isAgent(detector?)` -> boolean quick check
+- `isagent.start(options) -> Detector`
+- `detector.report()` -> `{ verdict, detected, agent, active, score, claude, agents, signals[], filledFields[] }`
+- `detector.summary(scope?)` -> compact JSON for servers
+- `detector.agentFill(element)` -> `{ method: "form_input"|"synthetic-typing"|"insert-text"|"programmatic-click"|"synthetic-event"|"no-user-input", ... } | null`
+- Options: `formField`, `threshold` (0.85), `onSignal`, `onDetect`, `onFieldFill`, `onActiveChange`, `frames`, per-watcher booleans (`overlay`, `markers`, `favicon`, `forms`, `keyboard`, `mouse`, `environment`).
+- Window events: `isagent:signal`, `isagent:detect`, `isagent:fill`, `isagent:active`.
+
+## Docs
+
+- README.md: usage, signal table, limits
+- docs/how-claude-in-chrome-works.md: what Claude in Chrome does to a page
+- src/isagent.d.ts: types

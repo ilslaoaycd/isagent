@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Detector Demo</title>
+<link rel="icon" href="data:,">
+<script src="../src/isagent.js"></script>
+<script>
+  // ?environment=0&mouse=0 … turns individual watchers off (used by the tests)
+  var demoOptions = {};
+  new URLSearchParams(location.search).forEach(function (v, k) { demoOptions[k] = v === "0" || v === "false" ? false : isNaN(+v) ? v : +v; });
+  window.detector = isagent.start(Object.assign({
+    formField: "agent_detection",
+    onSignal: function (s, r) { window.render && render(r); },
+    onFieldFill: function (f) { f.element.classList.add("agent-filled"); f.element.dataset.filledBy = f.method; window.render && render(detector.report()); }
+  }, demoOptions));
+  window.addEventListener("isagent:active", function () { window.render && render(detector.report()); });
+</script>
+<style>
+  :root { --bg:#f7f6f2; --fg:#1d1c1a; --muted:#6b6862; --card:#fff; --line:#dedbd2; --hit:#c6613f; --ok:#2f7d4f; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#191817; --fg:#ecebe6; --muted:#a19e96; --card:#242321; --line:#3a3835; } }
+  * { box-sizing: border-box; }
+  body { margin:0; font:15px/1.5 system-ui, sans-serif; background:var(--bg); color:var(--fg); }
+  main { max-width: 980px; margin: 0 auto; padding: 24px 16px; display:grid; gap:20px; grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+  h1 { grid-column: 1/-1; margin:0; font-size: 22px; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; }
+  label { display:block; margin: 10px 0 4px; font-size:13px; color:var(--muted); }
+  input:not([type=checkbox]), select, textarea { width:100%; padding:8px; font:inherit; border:1px solid var(--line); border-radius:6px; background:var(--bg); color:var(--fg); }
+  .agent-filled { outline: 2px solid var(--hit); outline-offset: 1px; }
+  button { margin-top: 14px; padding: 8px 16px; font:inherit; border-radius:6px; border:1px solid var(--line); background:var(--fg); color:var(--bg); cursor:pointer; }
+  #status { font-size: 18px; font-weight: 600; }
+  #status.hit { color: var(--hit); } #status.clean { color: var(--ok); }
+  #signals { list-style:none; padding:0; margin: 10px 0 0; font-size: 13px; }
+  #signals li { padding: 6px 0; border-top: 1px solid var(--line); }
+  code { font-size: 12px; }
+  #submitted { margin: 6px 0 0; padding: 10px; max-height: 260px; overflow: auto; font: 12px/1.45 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; word-break: break-word; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; }
+  .sub { color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>isagent demo <span class="sub">— fill the form yourself, or let an AI browser agent do it</span></h1>
+  <section>
+    <form id="signup" onsubmit="event.preventDefault(); document.getElementById('submitted').textContent = JSON.stringify(JSON.parse(new FormData(this).get('agent_detection')), null, 2);">
+      <label for="name">Full name</label>
+      <input id="name" name="name" autocomplete="off">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" autocomplete="off">
+      <label for="plan">Plan</label>
+      <select id="plan" name="plan"><option value="">Choose…</option><option value="free">Free</option><option value="pro">Pro</option></select>
+      <label for="bio">Bio</label>
+      <textarea id="bio" name="bio" rows="3"></textarea>
+      <label><input type="checkbox" id="terms" name="terms"> I accept the terms</label>
+      <button type="submit" id="submit">Submit</button>
+    </form>
+    <p class="sub">What your server receives in the <code>agent_detection</code> form field:</p>
+    <pre id="submitted">Submit the form to see it.</pre>
+  </section>
+  <section aria-live="polite">
+    <div id="status" class="clean">No agent detected</div>
+    <div id="scores" class="sub">score 0 · claude 0</div>
+    <ul id="signals"></ul>
+    <h3>Agent-filled fields</h3>
+    <ul id="fills"></ul>
+  </section>
+</main>
+<script>
+  function esc(t) { var d = document.createElement("div"); d.textContent = String(t); return d.innerHTML; }
+  function render(r) {
+    var st = document.getElementById("status");
+    st.textContent = r.verdict === "agent" ? "Agent detected" + (r.agent && r.agent !== "unknown" ? " (" + r.agent + ")" : "") : r.verdict === "suspected" ? "Possible automation" : "No agent detected";
+    st.className = r.verdict === "none" ? "clean" : "hit";
+    document.getElementById("scores").textContent = "score " + r.score + " · claude " + r.claude + (r.active ? " · Claude's controls on screen now" : "");
+    document.getElementById("signals").innerHTML = r.signals.map(function (s) {
+      return "<li><b>" + s.name + "</b> ×" + s.count + " <small>(" + s.weight + ")</small><br><small>" + esc(s.description) + "</small></li>";
+    }).join("");
+    document.getElementById("fills").innerHTML = r.filledFields.map(function (f) {
+      return "<li><code>" + esc(f.field) + "</code> via " + esc(f.method) + "</li>";
+    }).join("");
+  }
+  render(detector.report());
+</script>
+</body>
+</html>
