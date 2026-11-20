@@ -7,7 +7,7 @@
 [![gzip size](https://img.shields.io/badge/gzip-6.9%20KB-blue.svg)](dist/isagent.min.js)
 [![license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-**[Live demo](https://ilslaoaycd.github.io/isagent/demo/)** · **[How to detect Claude in Chrome](https://ilslaoaycd.github.io/isagent/)** · [npm](https://www.npmjs.com/package/isagent.js)
+**[Live demo](https://isagent.js.org/demo/)** · **[How to detect Claude in Chrome](https://isagent.js.org/)** · [npm](https://www.npmjs.com/package/isagent.js)
 
 ```js
 if (isagent.isAgent()) { /* an AI agent is driving this page */ }
@@ -31,7 +31,7 @@ Your server can't: Claude in Chrome runs inside the visitor's own Chrome, with t
 2. **Its `form_input` tool.** It fires an untrusted `change` event *before* `input`, which is the reverse of real typing and normal scripts.
 3. **Machine timing.** Keys are held for under a millisecond, and clicks jump to the target with no movement trail.
 
-`isagent` checks all three and tells you which fields Claude filled. To see it in action, open the [live demo](https://ilslaoaycd.github.io/isagent/demo/) and ask Claude in Chrome to fill in the form. The full explanation is in [How to detect Claude in Chrome](https://ilslaoaycd.github.io/isagent/).
+`isagent` checks all three and tells you which fields Claude filled. To see it in action, open the [live demo](https://isagent.js.org/demo/) and ask Claude in Chrome to fill in the form. The full explanation is in [How to detect Claude in Chrome](https://isagent.js.org/).
 
 ## Install
 

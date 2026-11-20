@@ -22,8 +22,8 @@
 
 ## Docs
 
-- https://ilslaoaycd.github.io/isagent/: how to detect Claude in Chrome (article)
-- https://ilslaoaycd.github.io/isagent/demo/: live demo
+- https://isagent.js.org/: how to detect Claude in Chrome (article)
+- https://isagent.js.org/demo/: live demo
 - README.md: usage, signal table, limits
 - docs/how-to-detect-claude-in-chrome.md: what Claude in Chrome does to a page
 - src/isagent.d.ts: types
